@@ -2,12 +2,14 @@
 # See the LICENSE file for more information.
 
 import collectd
+import multiprocessing
 
 from cpu_cores import CPUCoresCounter
 
 VERBOSE_LOGGING = True
 PROCESSORS_COUNT = 0
 CORES_COUNT = 0
+LOGICAL_PROCESSOR_COUNT = 0
 
 
 def log_verbose(msg):
@@ -21,7 +23,7 @@ def log_warning(msg):
 
 
 def configure_callback(conf):
-    global VERBOSE_LOGGING, CORES_COUNT, PROCESSORS_COUNT
+    global VERBOSE_LOGGING, CORES_COUNT, PROCESSORS_COUNT, LOGICAL_PROCESSOR_COUNT
     for node in conf.children:
         if node.key == 'Verbose':
             VERBOSE_LOGGING = bool(node.values[0])
@@ -30,8 +32,9 @@ def configure_callback(conf):
     c = CPUCoresCounter.factory()
     PROCESSORS_COUNT = c.get_physical_processors_count()
     CORES_COUNT = c.get_physical_cores_count()
-    log_verbose('Configured with verbose=%i, processors=%i, cores=%i'
-                % (VERBOSE_LOGGING, PROCESSORS_COUNT, CORES_COUNT))
+    LOGICAL_PROCESSOR_COUNT = multiprocessing.cpu_count()
+    log_verbose('Configured with verbose=%i, processors=%i, cores=%i, logical_cores=%i'
+                % (VERBOSE_LOGGING, PROCESSORS_COUNT, CORES_COUNT, LOGICAL_PROCESSOR_COUNT))
 
 
 def dispatch_value(value, key, typ):
@@ -47,6 +50,7 @@ def read_callback():
     log_verbose('Read callback called')
     dispatch_value(PROCESSORS_COUNT, 'physical_processors', 'gauge')
     dispatch_value(CORES_COUNT, 'physical_cores', 'gauge')
+    dispatch_value(LOGICAL_PROCESSOR_COUNT, 'logical_processors', 'gauge')
 
 
 collectd.register_config(configure_callback)
