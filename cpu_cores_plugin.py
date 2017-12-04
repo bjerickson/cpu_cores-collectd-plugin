@@ -67,7 +67,7 @@ def set_poll_config(config):
 
 def dispatch_poll_values(key, value, type):
     log_verbose('Sending values: {0}={1}'.format(key, value))
-    collectd_values = collectd.values(plugin='cpu_cores')
+    collectd_values = collectd.Values(plugin='cpu_cores')
     collectd_values.type = type
     collectd_values.type_instance = key
     collectd_values.values = [value]
