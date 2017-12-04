@@ -54,7 +54,7 @@ def set_poll_config(config):
         if node.key == 'Verbose':
             verbose_logging = bool(node.values[0])
         else:
-            log_warning("Unknown config key: {}".format(node.key))
+            log_warning("Unknown config key: {0}".format(node.key))
     lscpu_values = system_call("lscpu")
     if lscpu_values != 1:
         cpu_map = get_cpu_map(lscpu_values)
