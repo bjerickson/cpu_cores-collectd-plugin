@@ -26,7 +26,7 @@ def system_call(command):
         else:
             return 1
     except OSError as err:
-        print err
+        print(err)
         return 1
 
 def get_cpu_map(lscpu_values):
