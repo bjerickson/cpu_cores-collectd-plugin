@@ -31,7 +31,7 @@ def system_call(command):
 
 def get_cpu_map(lscpu_values):
     cpu_map = {}
-    lscpu_lines = lscpu_values.split('\n')
+    lscpu_lines = lscpu_values.decode("utf-8").split('\n')
     for line in lscpu_lines:
         line_split = line.split(':')
         if line_split[0] == 'CPU(s)':
